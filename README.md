@@ -1,4 +1,5 @@
-# csci-2503-assignment-6
+# CSCI 2503 - Survey of Programming Languages
+## Assignment 6
 Rust, and GUI Programming
 
 Georgia Southern - Survey of Programming Languages Assignment 6.
