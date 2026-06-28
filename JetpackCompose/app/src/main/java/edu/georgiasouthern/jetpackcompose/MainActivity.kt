@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import edu.georgiasouthern.jetpackcompose.ui.theme.JetpackComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,13 +43,67 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApp()
+            JetpackComposeTheme {
+                AppNav()
+            }
         }
     }
 }
 
 @Composable
-fun MyApp() {
+fun AppNav() {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination="splash"
+    ) {
+        composable("splash") {
+            SplashScreen(
+                onContinue = { navController.navigate("phone") }
+            )
+        }
+        composable("phone") {
+            PhoneScreen(
+                onBack= { navController. popBackStack() }
+            )
+        }
+    }
+}
+
+@Composable
+fun PhoneScreen(onBack: () -> Unit = {}) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .safeDrawingPadding()
+            .padding(horizontal = 30.dp, vertical = 43.dp),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top
+    ) {
+
+        Image(
+            painter = painterResource(R.drawable.tube_foreground),
+            contentDescription = "Test tube",
+            modifier = Modifier.size(72.dp)
+        )
+        Spacer(Modifier.height(43.dp))
+        Text(
+            color = Color(0xFF001B2D),
+            text="Welcome",
+            fontSize = 32.sp
+        )
+        Spacer(Modifier.height(2.dp))
+        Text(
+            text="Sign in to continue",
+            color= Color(0xFF77869e)
+        )
+    }
+}
+
+@Composable
+fun SplashScreen(onContinue: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,7 +130,7 @@ fun MyApp() {
         Spacer(Modifier.height(12.dp))
 
         Text(
-            text="Complete your daily worksheet",
+            text="Complete your daily worksheet\nScan it with Amazon Textract\nPush it to the cloud",
             color=Color.White.copy(alpha = 0.9f),
             fontSize=16.sp,
             textAlign = TextAlign.Center,
@@ -82,7 +140,7 @@ fun MyApp() {
         Spacer(Modifier.height(32.dp))
 
         Button(
-            onClick = { },
+            onClick = onContinue,
             Modifier.width(315.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF001B2D))
         ) {
@@ -96,5 +154,5 @@ fun MyApp() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    MyApp()
+    PhoneScreen()
 }
