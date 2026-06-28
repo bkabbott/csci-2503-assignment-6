@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import edu.georgiasouthern.jetpackcompose.ui.ui.home.HomeScreen
 import edu.georgiasouthern.jetpackcompose.ui.theme.JetpackComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -72,14 +73,25 @@ fun AppNav() {
         }
         composable("phone") {
             PhoneScreen(
-                onBack= { navController. popBackStack() }
+                onBack = { navController.popBackStack() },
+                onContinue = { navController.navigate("home") }
+            )
+        }
+        composable("home") {
+            HomeScreen(
+//                onBack = { navController.popBackStack() }
             )
         }
     }
 }
 
 @Composable
-fun PhoneScreen(onBack: () -> Unit = {}) {
+fun PinScreen(onBack: () -> Unit = {}) {
+
+}
+
+@Composable
+fun PhoneScreen(onBack: () -> Unit = {}, onContinue: () -> Unit = {}) {
     var phone by remember { mutableStateOf("") }
     var invalidPhone by remember { mutableStateOf(false) }
     Column(
@@ -139,6 +151,23 @@ fun PhoneScreen(onBack: () -> Unit = {}) {
                 modifier = Modifier.padding(top = 4.dp, start = 4.dp)
             )
         }
+
+        Spacer( Modifier.height(30.dp))
+
+        Button(
+            onClick = {
+                if (phone.length == 10) {
+                    onContinue()
+                } else {
+                    invalidPhone = true
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF008fd9)),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text("Continue")
+        }
     }
 }
 
@@ -188,6 +217,8 @@ fun SplashScreen(onContinue: () -> Unit = {}) {
         }
 
         Spacer(Modifier.weight(1f))
+
+
     }
 }
 
