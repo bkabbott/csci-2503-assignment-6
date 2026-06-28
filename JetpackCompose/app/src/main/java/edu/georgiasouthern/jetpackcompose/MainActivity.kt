@@ -86,11 +86,6 @@ fun AppNav() {
 }
 
 @Composable
-fun PinScreen(onBack: () -> Unit = {}) {
-
-}
-
-@Composable
 fun PhoneScreen(onBack: () -> Unit = {}, onContinue: () -> Unit = {}) {
     var phone by remember { mutableStateOf("") }
     var invalidPhone by remember { mutableStateOf(false) }
