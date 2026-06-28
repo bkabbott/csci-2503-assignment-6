@@ -6,29 +6,36 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,6 +80,8 @@ fun AppNav() {
 
 @Composable
 fun PhoneScreen(onBack: () -> Unit = {}) {
+    var phone by remember { mutableStateOf("") }
+    var invalidPhone by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,6 +108,37 @@ fun PhoneScreen(onBack: () -> Unit = {}) {
             text="Sign in to continue",
             color= Color(0xFF77869e)
         )
+        Spacer(Modifier.height(50.dp))
+        TextField(
+            value = phone,
+            onValueChange = { input ->
+                phone = input.filter { it.isDigit() }.take(10)
+                if (invalidPhone && phone.length == 10) invalidPhone = false
+            },
+            label = { Text("Enter your phone number") },
+            shape = RoundedCornerShape(16.dp),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color(0xFFF5F4F9),
+                unfocusedContainerColor = Color(0xFFF5F4F9)
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(
+                    if (invalidPhone) Modifier.border(2.dp, Color.Red, RoundedCornerShape(16.dp))
+                    else Modifier
+                )
+        )
+
+        // Isn't this fucking clean? No more visible, invisible and gone
+        if (invalidPhone) {
+            Text(
+                text = "Please enter a valid 10-digit phone number",
+                color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 4.dp, start = 4.dp)
+            )
+        }
     }
 }
 
